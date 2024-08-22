@@ -286,7 +286,7 @@ public class SandboxArreglos
      */
     public void organizarEnteros( )
     {
-    	
+    	Arrays.sort(this.arregloEnteros);
     }
 
     /**
@@ -294,7 +294,7 @@ public class SandboxArreglos
      */
     public void organizarCadenas( )
     {
-
+    	Arrays.sort(this.arregloCadenas);
     }
 
     /**
@@ -407,7 +407,38 @@ public class SandboxArreglos
      */
     public int contarEnterosRepetidos( )
     {
-        return -1;
+    	//Inicialización del contador de repetidos y el contador de apariciones de un número
+    	int counter = 0, apariciones = 0;
+    	//Verificar que el arreglo no este vacío
+    	if (this.getCantidadEnteros() != 0)
+    	{
+    		int currentNum = this.arregloEnteros[0];
+            boolean added = false;
+            //Hacer una copia del arreglo para organizarla e iterar sobre ella
+        	int[] copia = Arrays.copyOf(arregloEnteros, this.getCantidadEnteros());
+        	Arrays.sort(copia);
+        	for (int num : copia)
+        	{
+        		//Si el número es igual al número anterior, se sube el contador de apariciones y repeticiones
+        		if (num == currentNum)
+        		{
+        			apariciones++;
+        			if (!added && apariciones>1)
+        			{
+        				counter++;
+        			}
+        		}
+        		else
+        		{
+        			// Si el número es diferente al anterior, se actualiza el valor de la variable
+        			// currentNum y se resetea el contador a 1
+        			currentNum = num;
+        			apariciones = 1;
+        		}
+        	}
+    	}
+        
+    	return counter;
     }
 
     /**
@@ -427,7 +458,13 @@ public class SandboxArreglos
      */
     public boolean mismosEnteros( int[] otroArreglo )
     {
-        return false;
+        boolean iguales = false;
+    	int equal = Arrays.compare(this.arregloEnteros, otroArreglo);
+        if (equal == 0)
+        {
+        	iguales = true;
+        }
+    	return iguales;
     }
 
     /**
