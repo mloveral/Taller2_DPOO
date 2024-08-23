@@ -2,6 +2,9 @@ package uniandes.dpoo.estructuras.logica;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Esta clase tiene un conjunto de métodos para practicar operaciones sobre arreglos de enteros y de cadenas.
@@ -43,8 +46,13 @@ public class SandboxArreglos
      */
     public int[] getCopiaEnteros( )
     {
-        int[] copia = new int[]{};
-        copia = this.arregloEnteros;
+        int[] copia = new int[this.getCantidadEnteros()];
+        int i = 0;
+        for (int num: this.arregloEnteros)
+        {
+        	copia[i] = num;
+        	i++;
+        }
     	return copia;
     }
 
@@ -54,8 +62,13 @@ public class SandboxArreglos
      */
     public String[] getCopiaCadenas( )
     {
-        String[] copia = new String[]{};
-        copia = this.arregloCadenas;
+        String[] copia = new String[this.getCantidadCadenas()];
+        int i = 0;
+        for (String cadena: this.arregloCadenas)
+        {
+        	copia[i] = cadena;
+        	i++;
+        }
     	return copia;
     }
 
@@ -222,6 +235,7 @@ public class SandboxArreglos
         			resta++;
         		}
         	}
+        	this.arregloEnteros = nuevoArreglo;
     	}
     }
 
@@ -398,7 +412,21 @@ public class SandboxArreglos
      */
     public HashMap<Integer, Integer> calcularHistograma( )
     {
-        return null;
+        HashMap<Integer, Integer> histograma = new HashMap<>();
+        int cantidad = 0;
+        for (int num: this.arregloEnteros)
+        {
+        	if (histograma.containsKey(num))
+        	{
+        		cantidad = histograma.get(num) + 1;
+        		histograma.replace(num, cantidad);
+        	}
+        	else
+        	{
+        		histograma.put(num, 1);
+        	}
+        }
+    	return histograma;
     }
 
     /**
@@ -407,6 +435,7 @@ public class SandboxArreglos
      */
     public int contarEnterosRepetidos( )
     {
+   	
     	//Inicialización del contador de repetidos y el contador de apariciones de un número
     	int counter = 0, apariciones = 0;
     	//Verificar que el arreglo no este vacío
@@ -426,6 +455,7 @@ public class SandboxArreglos
         			if (!added && apariciones>1)
         			{
         				counter++;
+        				added = true;
         			}
         		}
         		else
@@ -434,6 +464,7 @@ public class SandboxArreglos
         			// currentNum y se resetea el contador a 1
         			currentNum = num;
         			apariciones = 1;
+        			added = false;
         		}
         	}
     	}
@@ -448,7 +479,13 @@ public class SandboxArreglos
      */
     public boolean compararArregloEnteros( int[] otroArreglo )
     {
-        return false;
+        boolean iguales = false;
+        int equal = Arrays.compare(this.arregloEnteros, otroArreglo);
+        if (equal == 0)
+        {
+        	iguales = true;
+        }
+    	return iguales;
     }
 
     /**
@@ -458,12 +495,18 @@ public class SandboxArreglos
      */
     public boolean mismosEnteros( int[] otroArreglo )
     {
-        boolean iguales = false;
-    	int equal = Arrays.compare(this.arregloEnteros, otroArreglo);
-        if (equal == 0)
-        {
-        	iguales = true;
+        boolean iguales = true;
+        HashMap<Integer, Integer> histograma = this.calcularHistograma();
+        int currentNum = 0, i = 0;
+        while (iguales && i < otroArreglo.length) {
+        	currentNum = otroArreglo[i];
+        	if (!histograma.containsKey(currentNum))
+        	{
+        		iguales = false;
+        	}
+        	i++;
         }
+        
     	return iguales;
     }
 
@@ -479,7 +522,13 @@ public class SandboxArreglos
      */
     public void generarEnteros( int cantidad, int minimo, int maximo )
     {
-
+    	this.arregloEnteros = new int[] {};
+    	int randNum = 0;
+    	for (int i = 0; i < cantidad; i++)
+    	{
+    		randNum = (int) (Math.random()*(maximo - minimo + 1)) + minimo;
+    		this.agregarEntero(randNum);
+    	}
     }
 
 }
