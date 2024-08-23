@@ -1,9 +1,14 @@
 package uniandes.dpoo.estructuras.logica;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Esta clase tiene un conjunto de métodos para practicar operaciones sobre mapas.
@@ -41,7 +46,20 @@ public class SandboxMapas
      */
     public List<String> getValoresComoLista( )
     {
-        return null;
+    	List <String> valores = new ArrayList<String>();
+    	if(!this.mapaCadenas.isEmpty())
+    	{
+    		SortedSet<String> llaves = new TreeSet<>(this.mapaCadenas.keySet());
+    		String valor = null;
+    		for (Iterator<String> iterador = llaves.iterator(); iterador.hasNext();)
+    		{
+    			valor = this.mapaCadenas.get(iterador.next());
+    			valores.add(valor);
+    		}
+        	Collections.sort(valores);
+    	}
+    	
+    	return valores;
     }
 
     /**
@@ -50,7 +68,10 @@ public class SandboxMapas
      */
     public List<String> getLlavesComoListaInvertida( )
     {
-        return null;
+        
+    	SortedSet<String> setLlaves = new TreeSet<>(this.mapaCadenas.keySet());
+    	List<String> llavesInvert = new ArrayList<>(setLlaves.reversed());
+    	return llavesInvert;
     }
 
     /**
@@ -61,7 +82,13 @@ public class SandboxMapas
      */
     public String getPrimera( )
     {
-        return null;
+        String primera = null;
+        if (this.getCantidadCadenasDiferentes() != 0)
+        {
+        	SortedSet<String> llaves = new TreeSet<>(this.mapaCadenas.keySet());
+        	primera = llaves.first();
+        }
+    	return primera;
     }
 
     /**
@@ -72,7 +99,13 @@ public class SandboxMapas
      */
     public String getUltima( )
     {
-        return null;
+    	String ultima = null;
+        if (this.getCantidadCadenasDiferentes() != 0)
+        {
+        	SortedSet<String> llaves = new TreeSet<>(this.mapaCadenas.keySet());
+        	ultima = llaves.last();
+        }
+    	return ultima;
     }
 
     /**
@@ -83,7 +116,16 @@ public class SandboxMapas
      */
     public Collection<String> getLlaves( )
     {
-        return null;
+        Collection<String> llaves = new ArrayList<>();
+        SortedSet<String> llavesMapa = new TreeSet<>(this.mapaCadenas.keySet());
+        String llave = null;
+        for (Iterator<String> iterador = llavesMapa.iterator(); iterador.hasNext();)
+        {
+        	llave = iterador.next().toUpperCase();
+        	llaves.add(llave);
+        }
+        
+    	return llaves;
     }
 
     /**
@@ -92,7 +134,10 @@ public class SandboxMapas
      */
     public int getCantidadCadenasDiferentes( )
     {
-        return -1;
+    	// La cantidad de llaves indica la cantidad de valores diferentes en el mapa
+    	// porque son lo mismo, pero invertido
+    	int cantidad = this.mapaCadenas.size();
+    	return cantidad;
     }
 
     /**
@@ -104,7 +149,18 @@ public class SandboxMapas
      */
     public void agregarCadena( String cadena )
     {
-
+    	// Invertir la cadena para la llave
+    	String llave = "";
+    	for (int i = cadena.length()- 1; i >= 0; i--)
+    	{
+    		llave += cadena.charAt(i);
+    	}
+    	
+    	//Verificar que no exista la llave antes
+    	if (!this.mapaCadenas.containsKey(llave))
+    	{
+    		this.mapaCadenas.put(llave, cadena);
+    	}
     }
 
     /**
@@ -113,7 +169,7 @@ public class SandboxMapas
      */
     public void eliminarCadenaConLLave( String llave )
     {
-
+    	this.mapaCadenas.remove(llave);
     }
 
     /**
@@ -122,7 +178,15 @@ public class SandboxMapas
      */
     public void eliminarCadenaConValor( String valor )
     {
-
+    	String llave = "";
+    	for (int i = valor.length()- 1; i >= 0; i--)
+    	{
+    		llave += valor.charAt(i);
+    	}
+    	if (this.mapaCadenas.containsKey(llave))
+    	{
+    		this.mapaCadenas.remove(llave);
+    	}
     }
 
     /**
@@ -133,7 +197,19 @@ public class SandboxMapas
      */
     public void reiniciarMapaCadenas( List<Object> objetos )
     {
-
+    	this.mapaCadenas.clear();
+    	String llave = "";
+    	String valor = "";
+    	for (Object obj: objetos)
+    	{
+    		valor = obj.toString();
+    		for (int i = valor.length()- 1; i >= 0; i--)
+    		{
+    			llave += valor.charAt(i);
+    		}
+    		this.mapaCadenas.put(llave, valor);
+    		llave = "";
+    	}
     }
 
     /**
@@ -141,7 +217,16 @@ public class SandboxMapas
      */
     public void volverMayusculas( )
     {
-
+    	String llave = "";
+    	String valor = "";
+    	SortedSet<String> llaves = new TreeSet<>(this.mapaCadenas.keySet());
+    	for (Iterator<String> iterador = llaves.iterator(); iterador.hasNext();)
+    	{
+    		llave = iterador.next();
+    		valor = this.mapaCadenas.get(llave);
+    		this.mapaCadenas.remove(llave, valor);
+    		this.mapaCadenas.put(llave.toUpperCase(), valor);
+    	}
     }
 
     /**
@@ -151,7 +236,29 @@ public class SandboxMapas
      */
     public boolean compararValores( String[] otroArreglo )
     {
-        return false;
+    	boolean iguales = true;
+    	SortedSet<String> llaves = new TreeSet<>(this.mapaCadenas.keySet());
+    	if (this.getCantidadCadenasDiferentes() == 0)
+    	{
+    		iguales = false;
+    	}
+    	int i = 0;
+    	String valor = null, llave = "";
+    	while (iguales && i < otroArreglo.length)
+    	{
+    		valor = otroArreglo[i];
+    		for (int j = valor.length()-1; j >= 0; j--)
+    		{
+    			llave += valor.charAt(j);
+    		}
+    		if (!this.mapaCadenas.containsKey(llave))
+    		{
+    			iguales = false;
+    		}
+    		llave = "";
+    		i++;
+    	}
+    	return iguales;
     }
 
 }
